@@ -6,7 +6,7 @@ services:
     repo: https://github.com/cercaniaWeb/eneochoene
     branch: main
     buildCommand: pnpm install && pnpm build
-    startCommand: N8N_PORT=$PORT pnpm start
+    startCommand: N8N_PORT=$PORT ./scripts/render-start.sh pnpm start
     envVars:
       - key: NODE_VERSION
         value: 22.16.0
@@ -14,26 +14,23 @@ services:
         value: postgresdb
       - key: DB_POSTGRESDB_HOST
         fromService:
-          type: psql
+          type: postgres
           name: n8n-cercania-db
           property: host
       - key: DB_POSTGRESDB_PORT
-        value: 5432
-      - key: DB_POSTGRESDB_DATABASE
         fromService:
-          type: psql
+          type: postgres
           name: n8n-cercania-db
-          property: database
+          property: port
+      - key: DB_CONNECTION_STRING
+        fromService:
+          type: postgres
+          name: n8n-cercania-db
+          property: connectionString
       - key: DB_POSTGRESDB_USER
-        fromService:
-          type: psql
-          name: n8n-cercania-db
-          property: user
-      - key: DB_POSTGRESDB_PASSWORD
-        fromService:
-          type: psql
-          name: n8n-cercania-db
-          property: password
+        value: n8n
+      - key: DB_POSTGRESDB_DATABASE
+        value: n8n
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
 
