@@ -2,10 +2,45 @@ services:
   - type: web
     name: n8n-cercania-web
     env: node
+    plan: free
     repo: https://github.com/cercaniaWeb/eneochoene
     branch: main
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
     envVars:
       - key: NODE_VERSION
         value: 22.16.0
-    buildCommand: 'NODE_OPTIONS=--max-old-space-size=8192 pnpm install && pnpm build'
-    startCommand: 'pnpm start'
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        fromService:
+          type: psql
+          name: n8n-cercania-db
+          property: host
+      - key: DB_POSTGRESDB_PORT
+        value: 5432
+      - key: DB_POSTGRESDB_DATABASE
+        fromService:
+          type: psql
+          name: n8n-cercania-db
+          property: database
+      - key: DB_POSTGRESDB_USER
+        fromService:
+          type: psql
+          name: n8n-cercania-db
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromService:
+          type: psql
+          name: n8n-cercania-db
+          property: password
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      - key: N8N_PORT
+        value: 10000
+
+databases:
+  - name: n8n-cercania-db
+    plan: free
+    databaseName: n8n
+    user: n8n
