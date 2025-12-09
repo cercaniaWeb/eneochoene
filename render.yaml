@@ -12,25 +12,10 @@ services:
         value: 22.16.0
       - key: DB_TYPE
         value: postgresdb
-      - key: DB_POSTGRESDB_HOST
-        fromService:
-          type: postgres
-          name: n8n-cercania-db
-          property: host
-      - key: DB_POSTGRESDB_PORT
-        fromService:
-          type: postgres
-          name: n8n-cercania-db
-          property: port
       - key: DB_CONNECTION_STRING
-        fromService:
-          type: postgres
+        fromDatabase:
           name: n8n-cercania-db
           property: connectionString
-      - key: DB_POSTGRESDB_USER
-        value: n8n
-      - key: DB_POSTGRESDB_DATABASE
-        value: n8n
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
 

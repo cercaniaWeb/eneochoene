@@ -1,16 +1,31 @@
 #!/bin/sh
 set -e
 
-# Extract DB password from connection string if available
+# Extract DB details from connection string if available
+# Format: postgres://user:password@host:port/database
 if [ -n "$DB_CONNECTION_STRING" ]; then
-    echo "Extracting database password from connection string..."
-    # Format: postgres://user:password@host:port/database
+    echo "Parsing database connection string..."
+
     # Remove protocol
     temp="${DB_CONNECTION_STRING#*://}"
-    # Remove everything after @ (gives user:password)
+
+    # Extract user:password
     creds="${temp%@*}"
-    # Extract password (everything after first colon)
+    export DB_POSTGRESDB_USER="${creds%%:*}"
     export DB_POSTGRESDB_PASSWORD="${creds#*:}"
+
+    # Extract host:port/database
+    rest="${temp#*@}"
+
+    # Extract host:port
+    hostport="${rest%%/*}"
+    export DB_POSTGRESDB_HOST="${hostport%%:*}"
+    export DB_POSTGRESDB_PORT="${hostport#*:}"
+
+    # Extract database
+    export DB_POSTGRESDB_DATABASE="${rest#*/}"
+
+    echo "Database configuration set from connection string."
 fi
 
 # Execute the passed command
