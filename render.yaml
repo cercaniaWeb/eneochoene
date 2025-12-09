@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: n8n-cercania-web
+    env: node
+    repo: https://github.com/cercaniaWeb/eneochoene
+    branch: master
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+    buildCommand: "NODE_OPTIONS=--max-old-space-size=8192 pnpm install && pnpm build"
+    startCommand: "pnpm start"
